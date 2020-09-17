@@ -18,7 +18,7 @@ public class directionTeller : MonoBehaviour
     public Texture indicatorTexture;
     Renderer render;
 
-    private float directionDegreeFloat;
+    private float directionDegreeFloat, windSpeedFloat;
     public float x,y,z;
    
     void Start()
@@ -49,12 +49,12 @@ public class directionTeller : MonoBehaviour
        //       Arrow.transform.parent = weatherTextObject.transform;
        //Position the indicator at origin of base
        Arrow.transform.localPosition = new Vector3(-0.0f,0.0f,0.0f);
-       tipOfArrow.transform.localPosition = new Vector3(-0.0f,0.0f,0.1f);
+       tipOfArrow.transform.localPosition = new Vector3(-0.0f,0.0f,-0.18f);
 
 
        //This controls the scale of the indicator
        scaleChange1 = new Vector3(-0.99f, -0.95f, -0.9f); //higher the number, the smaller
-       scaleChange2 = new Vector3(-0.99f, -0.95f, -0.99f); //higher the number, the smaller
+       scaleChange2 = new Vector3(-0.95f, -0.95f, -0.99f); //higher the number, the smaller
        Arrow.transform.localScale += scaleChange1;
        tipOfArrow.transform.localScale += scaleChange2;
 
@@ -110,31 +110,21 @@ public class directionTeller : MonoBehaviour
                 //Now we have the Json casted into a string
                 jsonData = webRequest.downloadHandler.text;
 
-                Debug.Log("*Recieved Information!*");
+                Debug.Log("***Recieved Information!***");
+                Debug.Log(":\nReceived Json: " + webRequest.downloadHandler.text);
                 //Get the data in between
                 string directionData = getData(jsonData, "deg\":", "}");
                 Debug.Log("Recieved Wind Direction degree: " + directionData);
 
+                string speedData = getData(jsonData, "\"speed\":", ".");
+                Debug.Log("Recieved Wind Speed: " + speedData);
+
                 // print out the weather data to make sure it makes sense
-                Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
+                
 
                 directionDegreeFloat = float.Parse(directionData, System.Globalization.CultureInfo.InvariantCulture);
+                windSpeedFloat = float.Parse(speedData, System.Globalization.CultureInfo.InvariantCulture);
                 Debug.Log("Degrees Float: " + directionDegreeFloat);
-
-                //transform.Rotate(x,y,z, Space.Self);
-
-
-
-
-
-                //transform.rotation = new Vector3(0,90,0);
-                
-                //Output to TMP in Unity
-                //weatherTextObject.GetComponent<TextMeshPro>().text = "Temperature: " + tempData + "F";
-
-                //scaleChange = new Vector3(0.0f, -90.0f, 0.0f);
-                //weatherTextObject.transform.localScale += scaleChange;
-                //directionTeller.transform.localScale += scaleChange;
             }
         }
     }
@@ -142,7 +132,7 @@ public class directionTeller : MonoBehaviour
     void Update() {
         //Arrow.transform.Rotate(x,y,z, Space.Self);
         Arrow.transform.localRotation = Quaternion.Euler (x,directionDegreeFloat,z);
-        tipOfArrow.transform.localRotation = Quaternion.Euler (x,directionDegreeFloat,z);
+        tipOfArrow.transform.localRotation = Quaternion.Euler (x,(180 + windSpeedFloat),z);
         Debug.Log("Rotation Successful - In function Update()");
     }
 }

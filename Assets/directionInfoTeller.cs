@@ -77,16 +77,16 @@ public class directionInfoTeller : MonoBehaviour
                 Debug.Log("*Recieved Information!*");
                 //Get the data in between
                 string directionData = getData(jsonData, "deg\":", "}");
-                Debug.Log("Recieved Wind Direction degree111: " + directionData);
+                Debug.Log("Recieved Wind Direction degree: " + directionData);
 
                 string speedData = getData(jsonData, "\"speed\":", ".");
-                Debug.Log("Recieved Wind Speed111: " + speedData);
+                Debug.Log("Recieved Wind Speed: " + speedData);
 
                 // print out the weather data to make sure it makes sense
                 Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
 
                 directionDegreeFloat = float.Parse(directionData, System.Globalization.CultureInfo.InvariantCulture);
-                Debug.Log("Degrees Float1111: " + directionDegreeFloat);
+                Debug.Log("Degrees Float: " + directionDegreeFloat);
 
                 //Checking to for mainly NESW first
                 if (directionDegreeFloat == 90) {
