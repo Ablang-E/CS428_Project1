@@ -7,7 +7,7 @@ using System.IO;
 
 
 
-public class tempHumiTeller : MonoBehaviour
+public class humidController : MonoBehaviour
 {
     public GameObject weatherTextObject;
        string url = "http://api.openweathermap.org/data/2.5/weather?lat=41.88&lon=-87.6&APPID=8ad1c3f5b1132445dd295286a925fe22&units=imperial";
@@ -15,6 +15,10 @@ public class tempHumiTeller : MonoBehaviour
        //Stuff for widgets
        public int temperature;
        public int humidity;
+
+       public float cylSize;
+       public float x,y,z;
+       public decimal dec;
 
    
     void Start()
@@ -72,18 +76,29 @@ public class tempHumiTeller : MonoBehaviour
 
                 Debug.Log("*Recieved Information!*");
                 //Get the data in between
-                string tempData = getData(jsonData, "temp\":", ".");
-                Debug.Log("Recieved Temp Data: " + tempData);
+                string humidityData = getData(jsonData, "humidity\":", "}");
+                cylSize = float.Parse(humidityData, System.Globalization.CultureInfo.InvariantCulture);
+                Debug.Log("Recieved Humid Data: " + humidityData);
+                Debug.Log("cylSize: " + cylSize);
 
-                string humidData = getData(jsonData, "humidity\":", "}");
+                
 
                 // print out the weather data to make sure it makes sense
                 Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
                 
                 //Output to TMP in Unity
-                weatherTextObject.GetComponent<TextMeshPro>().text = "Temperature: " + tempData + "F";
+                //weatherTextObject.GetComponent<TextMeshPro>().text = "Temperature: " + tempData + "F";
                 
             }
         }
+    }
+
+    void Update() 
+    {
+        y = cylSize * 0.558f;
+
+        weatherTextObject.transform.localScale = new Vector3(10.0f, y, 10.0f);
+         //= Quaternion.Euler(x,cylSize,z);
+
     }
 }

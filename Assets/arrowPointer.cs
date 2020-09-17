@@ -18,10 +18,6 @@ public class arrowPointer : MonoBehaviour
     void Start()
     {
         InvokeRepeating("GetDataFromWeb", 2f, 900f);
-        scaleChange = new Vector3 (0.0f, 0.0f, 0.0f);
-        positionChange = new Vector3 (0.0f, 0.0f, 0.0f);
-        rotationChange = new Vector3 (0.0f, 90.0f, 0.0f);
-        
     }
 
     void GetDataFromWeb()
@@ -91,7 +87,7 @@ public class arrowPointer : MonoBehaviour
     void Update()
     {
         pointer.transform.localRotation = Quaternion.Euler(x,directionDegreeFloat,z);
-        lowerPointer.transform.localRotation = Quaternion.Euler(x,windSpeedFloat,z);
+        lowerPointer.transform.localRotation = Quaternion.Euler(x,windSpeedFloat * 4.0f,z);
     }
     
 }
