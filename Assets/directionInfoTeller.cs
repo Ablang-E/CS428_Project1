@@ -76,7 +76,7 @@ public class directionInfoTeller : MonoBehaviour
 
                 Debug.Log("*Recieved Information!*");
                 //Get the data in between
-                string directionData = getData(jsonData, "deg\":", ",");
+                string directionData = getData(jsonData, "deg\":", "}");
                 Debug.Log("Recieved Wind Direction degree111: " + directionData);
 
                 string speedData = getData(jsonData, "\"speed\":", ".");

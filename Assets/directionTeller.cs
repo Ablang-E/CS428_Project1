@@ -59,7 +59,7 @@ public class directionTeller : MonoBehaviour
        tipOfArrow.transform.localScale += scaleChange2;
 
        //Color changing
-       tipOfArrow.GetComponent<Renderer>().material.color = Color.red;
+       tipOfArrow.GetComponent<Renderer>().material.color = Color.blue;
        Arrow.GetComponent<Renderer>().material.color = Color.black;
        Arrow.name = "Self";
 
@@ -112,7 +112,7 @@ public class directionTeller : MonoBehaviour
 
                 Debug.Log("*Recieved Information!*");
                 //Get the data in between
-                string directionData = getData(jsonData, "deg\":", ",");
+                string directionData = getData(jsonData, "deg\":", "}");
                 Debug.Log("Recieved Wind Direction degree: " + directionData);
 
                 // print out the weather data to make sure it makes sense
