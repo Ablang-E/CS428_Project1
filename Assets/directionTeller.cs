@@ -11,9 +11,14 @@ public class directionTeller : MonoBehaviour
 {
     //public GameObject weatherTextObject;
     string url = "http://api.openweathermap.org/data/2.5/weather?lat=41.88&lon=-87.6&APPID=8ad1c3f5b1132445dd295286a925fe22&units=imperial";
-    private Vector3 scaleChange;
-    private GameObject Arrow;
+    private Vector3 scaleChange1;
+    private Vector3 scaleChange2;
+    private GameObject Arrow, tipOfArrow;
     public Transform Base;
+    public Texture indicatorTexture;
+    Renderer render;
+
+    private float directionDegreeFloat;
     public float x,y,z;
    
     void Start()
@@ -22,13 +27,43 @@ public class directionTeller : MonoBehaviour
     // wait a couple seconds to start and then refresh every 900 seconds
 
        InvokeRepeating("GetDataFromWeb", 2f, 900f);
+
+       //Creating texture for indicator
+       render = GetComponent<Renderer> ();
+
+       render.material.EnableKeyword ("_NORMALMAP");
+       render.material.EnableKeyword ("_METALLICGLOSSMAP");
+
+       render.material.SetTexture("indicator", indicatorTexture);
+
+       //Creating the indicator
        Arrow = GameObject.CreatePrimitive(PrimitiveType.Cube);
+       tipOfArrow = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+       //Settting the indicator as a child to image target (Base)
        Arrow.transform.SetParent(Base, true);
+       tipOfArrow.transform.SetParent(Base, true);
+       //tipOfArrow.transform.parent = Arrow.transform;
+
+       
        //       Arrow.transform.parent = weatherTextObject.transform;
+       //Position the indicator at origin of base
        Arrow.transform.localPosition = new Vector3(-0.0f,0.0f,0.0f);
-       scaleChange = new Vector3(-0.9f, -0.9f, -0.9f);
-       Arrow.transform.localScale += scaleChange;
+       tipOfArrow.transform.localPosition = new Vector3(-0.0f,0.0f,0.1f);
+
+
+       //This controls the scale of the indicator
+       scaleChange1 = new Vector3(-0.99f, -0.95f, -0.9f); //higher the number, the smaller
+       scaleChange2 = new Vector3(-0.99f, -0.95f, -0.99f); //higher the number, the smaller
+       Arrow.transform.localScale += scaleChange1;
+       tipOfArrow.transform.localScale += scaleChange2;
+
+       //Color changing
+       tipOfArrow.GetComponent<Renderer>().material.color = Color.red;
+       Arrow.GetComponent<Renderer>().material.color = Color.black;
        Arrow.name = "Self";
+
+       //tipOfArrow.GetComponent<Renderer>().material.texture = render;
    }
 
    void GetDataFromWeb()
@@ -72,18 +107,19 @@ public class directionTeller : MonoBehaviour
             }
             else
             {
-                
-
                 //Now we have the Json casted into a string
                 jsonData = webRequest.downloadHandler.text;
 
                 Debug.Log("*Recieved Information!*");
                 //Get the data in between
-                string tempData = getData(jsonData, "temp\":", ".");
-                Debug.Log("Recieved Temp Data: " + tempData);
+                string directionData = getData(jsonData, "deg\":", ",");
+                Debug.Log("Recieved Wind Direction degree: " + directionData);
 
                 // print out the weather data to make sure it makes sense
                 Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
+
+                directionDegreeFloat = float.Parse(directionData, System.Globalization.CultureInfo.InvariantCulture);
+                Debug.Log("Degrees Float: " + directionDegreeFloat);
 
                 //transform.Rotate(x,y,z, Space.Self);
 
@@ -105,7 +141,8 @@ public class directionTeller : MonoBehaviour
 
     void Update() {
         //Arrow.transform.Rotate(x,y,z, Space.Self);
-        Arrow.transform.localRotation = Quaternion.Euler (x,y,z);
-        Debug.Log("Rotation Successful");
+        Arrow.transform.localRotation = Quaternion.Euler (x,directionDegreeFloat,z);
+        tipOfArrow.transform.localRotation = Quaternion.Euler (x,directionDegreeFloat,z);
+        Debug.Log("Rotation Successful - In function Update()");
     }
 }
