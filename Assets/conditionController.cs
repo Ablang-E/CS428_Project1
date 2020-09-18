@@ -16,6 +16,8 @@ public class conditionController : MonoBehaviour
 
     public GameObject clearSkyObj, fewCloudsObj, scatteredCloudsObj, brokenCLoudsObj, showerRainObj, rainObj, thunderObj, snowObj, mistObj;
 
+    public ParticleSystem particles;
+
     //Function to turn all condition indicators off - this is always called before checking to see what the parsing is. This helps with reset
     void resetCondition() {
         fewCloudsObj.GetComponentInChildren<Renderer>().enabled = false;
@@ -69,36 +71,64 @@ public class conditionController : MonoBehaviour
                 //Get the data in between
                 string conditionData = getData(jsonData, "icon\":\"", "\"");
                 Debug.Log("Recieved Condition Info: " + conditionData);
-                //resetCondition(); //turn cloud off
-                //clearSkyObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); //originally .001 .001 .001
-                //fewCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                //resetCondition1();
                 
-                
-
-                //textObject.GetComponent<TextMeshPro>().text = conditionData;
-
                 //Now we want to run through here and check which condition displays 
                 //Icons have night and day png****
 
-                conditionData = "02d";
+                //This is for testing
+                conditionData = "13d";
+
+                //particles = showerRainObj.GetComponentInChildren<ParticleSystem>();
                 
                 //Clear skys
-                if (conditionData == "01d" || conditionData == ".01n") {
-                    //clearSkyObj.GetComponent<Renderer>().enabled = true;
+                if (conditionData == "01d" || conditionData == "01n") {
+                    clearSkyObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); //originally .001 .001 .001
                 }
 
                 //Few clouds
-                else if (conditionData == "02d" || conditionData == ".02n") {
-                    //fewCloudsObj.GetComponent<Renderer>().enabled = true;
+                else if (conditionData == "02d" || conditionData == "02n") {
                     fewCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                 }
-                
 
+                //Scatter clouds
+                else if (conditionData == "03d" || conditionData == "03n") {
+                    scatteredCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
 
+                //Broken clouds
+                else if (conditionData == "04d" || conditionData == "04n") {
+                    brokenCLoudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
 
-                // print out the weather data to make sure it makes sense
-                
+                //Shower rain
+                else if (conditionData == "09d" || conditionData == "09n") {
+                    showerRainObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    //particles.Play(true);
+                    //particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    //Debug.Log("Inside of 09d: " + particles.isPlaying);
+
+                }
+
+                //Rain 
+                else if (conditionData == "10d" || conditionData == "10n") {
+                    rainObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
+
+                //Thunderstorm
+                else if (conditionData == "11d" || conditionData == "11n") {
+                    thunderObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
+
+                //Snow
+                else if (conditionData == "13d" || conditionData == "13n") {
+                    snowObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
+
+                //Mist
+                else if (conditionData == "50d" || conditionData == "50n") {
+                    mistObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
+
 
                 //directionDegreeFloat = float.Parse(directionData, System.Globalization.CultureInfo.InvariantCulture);
             }
@@ -107,6 +137,11 @@ public class conditionController : MonoBehaviour
     void Start()
     {
         InvokeRepeating("GetDataFromWeb", 2f, 900f);
+        //Debug.Log(particles.isPlaying);
+        //particles.Play(true);
+        //Debug.Log(particles.isPlaying);
+        //particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
     }
 
     void GetDataFromWeb()
@@ -125,6 +160,9 @@ public class conditionController : MonoBehaviour
 
         //update the position
         fewCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), fewCloudsObj.transform.position.y, fewCloudsObj.transform.position.z);
+        scatteredCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), scatteredCloudsObj.transform.position.y, scatteredCloudsObj.transform.position.z);
+        brokenCLoudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), brokenCLoudsObj.transform.position.y, brokenCLoudsObj.transform.position.z);
+        snowObj.transform.position = new Vector3 (snowObj.transform.position.x, -0.7f+Mathf.PingPong(Time.time * 0.1f, 0.1f), snowObj.transform.position.z);
    }
 }
 
