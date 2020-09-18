@@ -1,29 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine;
 using TMPro;
-using System.IO;
 
-public class arrowPointer : MonoBehaviour
+public class conditionInfoTeller : MonoBehaviour
 {
-    public GameObject pointer, lowerPointer;
+    public GameObject textObject;
+
     string url = "http://api.openweathermap.org/data/2.5/weather?lat=41.88&lon=-87.6&APPID=8ad1c3f5b1132445dd295286a925fe22&units=imperial";
 
     private float directionDegreeFloat, windSpeedFloat;
+    private string conditionVar;
     public float x,y,z;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        InvokeRepeating("GetDataFromWeb", 2f, 900f);
-    }
-
-    void GetDataFromWeb()
-   {
-
-       StartCoroutine(GetRequest(url));
-   }
 
     public static string getData(string source, string sourceStart, string sourceEnd)
     {
@@ -33,7 +22,7 @@ public class arrowPointer : MonoBehaviour
             int Start;
             int End;
 
-        
+            
             Start = source.IndexOf(sourceStart, 0) + sourceStart.Length;
             End = source.IndexOf(sourceEnd, Start);
 
@@ -41,7 +30,7 @@ public class arrowPointer : MonoBehaviour
             return source.Substring(Start, End - Start);
         }
 
-    //Return nothing (shouldnt get to this point)
+        //Return nothing (shouldnt get to this point)
         return "";
     }
 
@@ -64,29 +53,37 @@ public class arrowPointer : MonoBehaviour
                 jsonData = webRequest.downloadHandler.text;
 
                 Debug.Log("***Recieved Information!***");
-                Debug.Log(":\nReceived Json: " + webRequest.downloadHandler.text);
                 //Get the data in between
-                string directionData = getData(jsonData, "deg\":", "}");
-                Debug.Log("Recieved Wind Direction degree2: " + directionData);
+                string conditionData = getData(jsonData, "description\":\"", "\"");
+                Debug.Log("Recieved Condition Info: " + conditionData);
 
-                string speedData = getData(jsonData, "\"speed\":", ".");
-                Debug.Log("Recieved Wind Speed2: " + speedData);
+                textObject.GetComponent<TextMeshPro>().text = conditionData;
+
+                //Now we want to run through here and check which condition displays 
+                //Icons have night and day png****
+                /*
+                if (conditionData == "01d" || conditionData == ".01n") {
+                    conditionVar = 
+                }
+                */
+
+
 
                 // print out the weather data to make sure it makes sense
                 
 
-                directionDegreeFloat = float.Parse(directionData, System.Globalization.CultureInfo.InvariantCulture);
-                windSpeedFloat = float.Parse(speedData, System.Globalization.CultureInfo.InvariantCulture);
-                Debug.Log("Degrees Float: " + directionDegreeFloat);
+                //directionDegreeFloat = float.Parse(directionData, System.Globalization.CultureInfo.InvariantCulture);
             }
         }
     }
-
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        pointer.transform.localRotation = Quaternion.Euler(x,directionDegreeFloat,z);
-        lowerPointer.transform.localRotation = Quaternion.Euler(x,windSpeedFloat * 4.0f,z);
+        InvokeRepeating("GetDataFromWeb", 2f, 900f);
     }
-    
+
+    void GetDataFromWeb()
+   {
+
+       StartCoroutine(GetRequest(url));
+   }
 }
