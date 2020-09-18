@@ -10,9 +10,6 @@ public class conditionController : MonoBehaviour
     string url = "http://api.openweathermap.org/data/2.5/weather?lat=41.88&lon=-87.6&APPID=8ad1c3f5b1132445dd295286a925fe22&units=imperial";
 
     private float directionDegreeFloat, windSpeedFloat, randomNumber;
-    private float movementSpeed = 10f;
-
-    private string conditionVar;
 
     public GameObject clearSkyObj, fewCloudsObj, scatteredCloudsObj, brokenCLoudsObj, showerRainObj, rainObj, thunderObj, snowObj, mistObj;
 
@@ -74,59 +71,61 @@ public class conditionController : MonoBehaviour
                 
                 //Now we want to run through here and check which condition displays 
                 //Icons have night and day png****
-
                 //This is for testing
                 conditionData = "13d";
-
-                //particles = showerRainObj.GetComponentInChildren<ParticleSystem>();
                 
                 //Clear skys
                 if (conditionData == "01d" || conditionData == "01n") {
-                    clearSkyObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); //originally .001 .001 .001
+                    //clearSkyObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); //originally .001 .001 .001
+                    clearSkyObj.gameObject.SetActive(true);
                 }
 
                 //Few clouds
                 else if (conditionData == "02d" || conditionData == "02n") {
-                    fewCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    //fewCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    fewCloudsObj.gameObject.SetActive(true);
                 }
 
                 //Scatter clouds
                 else if (conditionData == "03d" || conditionData == "03n") {
-                    scatteredCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    //scatteredCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    scatteredCloudsObj.gameObject.SetActive(true);
                 }
 
                 //Broken clouds
                 else if (conditionData == "04d" || conditionData == "04n") {
-                    brokenCLoudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    //brokenCLoudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    brokenCLoudsObj.gameObject.SetActive(true);
                 }
 
                 //Shower rain
                 else if (conditionData == "09d" || conditionData == "09n") {
-                    showerRainObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                    //particles.Play(true);
-                    //particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                    //Debug.Log("Inside of 09d: " + particles.isPlaying);
-
+                    //showerRainObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    showerRainObj.gameObject.SetActive(true);
                 }
 
                 //Rain 
                 else if (conditionData == "10d" || conditionData == "10n") {
-                    rainObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    //rainObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    rainObj.gameObject.SetActive(true);
                 }
 
                 //Thunderstorm
                 else if (conditionData == "11d" || conditionData == "11n") {
-                    thunderObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    //thunderObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    thunderObj.gameObject.SetActive(true);
                 }
 
                 //Snow
                 else if (conditionData == "13d" || conditionData == "13n") {
-                    snowObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    //snowObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    snowObj.gameObject.SetActive(true);
                 }
 
                 //Mist
                 else if (conditionData == "50d" || conditionData == "50n") {
-                    mistObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    //mistObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    mistObj.gameObject.SetActive(true);
                 }
 
 
@@ -137,11 +136,17 @@ public class conditionController : MonoBehaviour
     void Start()
     {
         InvokeRepeating("GetDataFromWeb", 2f, 900f);
-        //Debug.Log(particles.isPlaying);
-        //particles.Play(true);
-        //Debug.Log(particles.isPlaying);
-        //particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
+        //Set all conditions as false (not visible when we run the program)
+        clearSkyObj.gameObject.SetActive(false);
+        fewCloudsObj.gameObject.SetActive(false);
+        scatteredCloudsObj.gameObject.SetActive(false);
+        brokenCLoudsObj.gameObject.SetActive(false);
+        showerRainObj.gameObject.SetActive(false);
+        rainObj.gameObject.SetActive(false);
+        thunderObj.gameObject.SetActive(false);
+        snowObj.gameObject.SetActive(false);
+        mistObj.gameObject.SetActive(false);
     }
 
     void GetDataFromWeb()
@@ -158,11 +163,11 @@ public class conditionController : MonoBehaviour
         //get the Input from Vertical axis
         float verticalInput = Input.GetAxis("Vertical");
 
-        //update the position
+        //This is the animation code for the clouds. Side to side and Up to down
         fewCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), fewCloudsObj.transform.position.y, fewCloudsObj.transform.position.z);
         scatteredCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), scatteredCloudsObj.transform.position.y, scatteredCloudsObj.transform.position.z);
         brokenCLoudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), brokenCLoudsObj.transform.position.y, brokenCLoudsObj.transform.position.z);
-        snowObj.transform.position = new Vector3 (snowObj.transform.position.x, -0.7f+Mathf.PingPong(Time.time * 0.1f, 0.1f), snowObj.transform.position.z);
+        //snowObj.transform.position = new Vector3 (snowObj.transform.position.x, -0.7f+Mathf.PingPong(Time.time * 0.1f, 0.1f), snowObj.transform.position.z);
    }
 }
 
