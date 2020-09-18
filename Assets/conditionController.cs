@@ -10,6 +10,7 @@ public class conditionController : MonoBehaviour
     string url = "http://api.openweathermap.org/data/2.5/weather?lat=41.88&lon=-87.6&APPID=8ad1c3f5b1132445dd295286a925fe22&units=imperial";
 
     private float directionDegreeFloat, windSpeedFloat, randomNumber;
+    private float movementSpeed = 10f;
 
     private string conditionVar;
 
@@ -17,7 +18,12 @@ public class conditionController : MonoBehaviour
 
     //Function to turn all condition indicators off - this is always called before checking to see what the parsing is. This helps with reset
     void resetCondition() {
-        clearSkyObj.GetComponent<Renderer>().enabled = true;
+        fewCloudsObj.GetComponentInChildren<Renderer>().enabled = false;
+
+    }
+
+    void resetCondition1() {
+        clearSkyObj.GetComponentInChildren<Renderer>().enabled = true;
 
     }
 
@@ -63,19 +69,31 @@ public class conditionController : MonoBehaviour
                 //Get the data in between
                 string conditionData = getData(jsonData, "icon\":\"", "\"");
                 Debug.Log("Recieved Condition Info: " + conditionData);
-                clearSkyObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); //originally .001 .001 .001
+                //resetCondition(); //turn cloud off
+                //clearSkyObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); //originally .001 .001 .001
+                //fewCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                //resetCondition1();
                 
-                //resetCondition();
+                
 
                 //textObject.GetComponent<TextMeshPro>().text = conditionData;
 
                 //Now we want to run through here and check which condition displays 
                 //Icons have night and day png****
-                /*
+
+                conditionData = "02d";
+                
+                //Clear skys
                 if (conditionData == "01d" || conditionData == ".01n") {
-                    sunWidget = enabled
+                    //clearSkyObj.GetComponent<Renderer>().enabled = true;
                 }
-                */
+
+                //Few clouds
+                else if (conditionData == "02d" || conditionData == ".02n") {
+                    //fewCloudsObj.GetComponent<Renderer>().enabled = true;
+                    fewCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
+                
 
 
 
@@ -99,7 +117,14 @@ public class conditionController : MonoBehaviour
 
    void Update() {
        clearSkyObj.transform.Rotate (0.0f, 1.0f, 0.0f, Space.Self);
-       
+       //fewCloudsObj.transform.Rotate (0.0f, 1.0f, 0.0f, Space.Self);
+
+       float horizontalInput = Input.GetAxis("Horizontal");
+        //get the Input from Vertical axis
+        float verticalInput = Input.GetAxis("Vertical");
+
+        //update the position
+        fewCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), fewCloudsObj.transform.position.y, fewCloudsObj.transform.position.z);
    }
 }
 
