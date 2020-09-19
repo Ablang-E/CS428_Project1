@@ -14,6 +14,7 @@ http://soundbible.com/1508-Background-Noise.html
 http://soundbible.com/2006-Bird-In-Rain.html
 http://soundbible.com/901-Rain-And-Thunder-Strikes.html
 http://soundbible.com/2065-Rain-Inside-House.html
+Sun texture: https://www.solarsystemscope.com/textures/
 
 */
 

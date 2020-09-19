@@ -67,6 +67,11 @@ public class arrowPointer : MonoBehaviour
                 Debug.Log(":\nReceived Json: " + webRequest.downloadHandler.text);
                 //Get the data in between
                 string directionData = getData(jsonData, "deg\":", "}"); //need to check again if it has "gust"
+                string gustDump = "gust";
+                //string directionData = "deg\":52.66,\"\"gust\":45.00}" ;
+                if (directionData.Contains(gustDump)) {
+                    directionData = getData(directionData, "deg\":", ".");
+                }
                 //check to see if icon contains gust
                 //if it does, re parse the data using getData() (directionData, "", "gust");
                 //if (directionData.Contains())

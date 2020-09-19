@@ -11,12 +11,6 @@ public class directionInfoTeller : MonoBehaviour
 {
     public GameObject weatherTextObject;
     string url = "http://api.openweathermap.org/data/2.5/weather?lat=41.88&lon=-87.6&APPID=8ad1c3f5b1132445dd295286a925fe22&units=imperial";
-    private Vector3 scaleChange1;
-    private Vector3 scaleChange2;
-    private GameObject Arrow, tipOfArrow;
-    public Transform Base;
-    public Texture indicatorTexture;
-    Renderer render;
     string direction;
 
     private float directionDegreeFloat;
@@ -77,6 +71,13 @@ public class directionInfoTeller : MonoBehaviour
                 Debug.Log("*Recieved Information!*");
                 //Get the data in between
                 string directionData = getData(jsonData, "deg\":", "}");
+
+                string gustDump = "gust";
+                //string directionData = "deg\":52.66,\"\"gust\":45.00}" ;
+                if (directionData.Contains(gustDump)) {
+                    directionData = getData(directionData, "deg\":", ".");
+                }
+
                 Debug.Log("Recieved Wind Direction degree: " + directionData);
 
                 string speedData = getData(jsonData, "\"speed\":", ".");
@@ -111,19 +112,19 @@ public class directionInfoTeller : MonoBehaviour
                     direction = "NE";
                 }
 
-                //NW Check
-                else if (directionDegreeFloat > 90 && directionDegreeFloat < 180) {
-                    direction = "NW";
-                }
-
                 //SE Check
-                else if (directionDegreeFloat > 270 && directionDegreeFloat < 360) {
+                else if (directionDegreeFloat > 90 && directionDegreeFloat < 180) {
                     direction = "SE";
                 }
 
                 //SW Check
                 else if (directionDegreeFloat > 180 && directionDegreeFloat < 270) {
                     direction = "SW";
+                }
+
+                //NW Check
+                else if (directionDegreeFloat > 270 && directionDegreeFloat < 360) {
+                    direction = "NW";
                 }
                 
                 //Output to TMP in Unity
