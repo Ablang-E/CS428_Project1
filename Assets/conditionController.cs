@@ -4,6 +4,19 @@ using UnityEngine.Networking;
 using UnityEngine;
 using TMPro;
 
+/* References for sound clips
+http://soundbible.com/636-Windy.html
+http://soundbible.com/634-Wind-Blowing.html
+http://soundbible.com/633-Snowing.html
+http://soundbible.com/2083-Crickets-Chirping-At-Night.html
+http://soundbible.com/1661-Sunny-Day.html
+http://soundbible.com/1508-Background-Noise.html
+http://soundbible.com/2006-Bird-In-Rain.html
+http://soundbible.com/901-Rain-And-Thunder-Strikes.html
+http://soundbible.com/2065-Rain-Inside-House.html
+
+*/
+
 public class conditionController : MonoBehaviour
 {
 
@@ -13,17 +26,22 @@ public class conditionController : MonoBehaviour
 
     public GameObject clearSkyObj, fewCloudsObj, scatteredCloudsObj, brokenCLoudsObj, showerRainObj, rainObj, thunderObj, snowObj, mistObj;
 
-    public ParticleSystem particles;
+    public GameObject[] objArray;
+
+    public int counter;
+
 
     //Function to turn all condition indicators off - this is always called before checking to see what the parsing is. This helps with reset
-    void resetCondition() {
-        fewCloudsObj.GetComponentInChildren<Renderer>().enabled = false;
-
-    }
-
-    void resetCondition1() {
-        clearSkyObj.GetComponentInChildren<Renderer>().enabled = true;
-
+    void debugTurnOffConditions() {
+        clearSkyObj.gameObject.SetActive(false);
+        fewCloudsObj.gameObject.SetActive(false);
+        scatteredCloudsObj.gameObject.SetActive(false);
+        brokenCLoudsObj.gameObject.SetActive(false);
+        showerRainObj.gameObject.SetActive(false);
+        rainObj.gameObject.SetActive(false);
+        thunderObj.gameObject.SetActive(false);
+        snowObj.gameObject.SetActive(false);
+        mistObj.gameObject.SetActive(false); 
     }
 
     public static string getData(string source, string sourceStart, string sourceEnd)
@@ -72,70 +90,61 @@ public class conditionController : MonoBehaviour
                 //Now we want to run through here and check which condition displays 
                 //Icons have night and day png****
                 //This is for testing
-                conditionData = "13d";
+                //conditionData = "10d";
                 
                 //Clear skys
                 if (conditionData == "01d" || conditionData == "01n") {
-                    //clearSkyObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); //originally .001 .001 .001
                     clearSkyObj.gameObject.SetActive(true);
                 }
 
                 //Few clouds
                 else if (conditionData == "02d" || conditionData == "02n") {
-                    //fewCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     fewCloudsObj.gameObject.SetActive(true);
                 }
 
                 //Scatter clouds
                 else if (conditionData == "03d" || conditionData == "03n") {
-                    //scatteredCloudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     scatteredCloudsObj.gameObject.SetActive(true);
                 }
 
                 //Broken clouds
                 else if (conditionData == "04d" || conditionData == "04n") {
-                    //brokenCLoudsObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     brokenCLoudsObj.gameObject.SetActive(true);
                 }
 
                 //Shower rain
                 else if (conditionData == "09d" || conditionData == "09n") {
-                    //showerRainObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     showerRainObj.gameObject.SetActive(true);
                 }
 
                 //Rain 
                 else if (conditionData == "10d" || conditionData == "10n") {
-                    //rainObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     rainObj.gameObject.SetActive(true);
                 }
 
                 //Thunderstorm
                 else if (conditionData == "11d" || conditionData == "11n") {
-                    //thunderObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     thunderObj.gameObject.SetActive(true);
                 }
 
                 //Snow
                 else if (conditionData == "13d" || conditionData == "13n") {
-                    //snowObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     snowObj.gameObject.SetActive(true);
                 }
 
                 //Mist
                 else if (conditionData == "50d" || conditionData == "50n") {
-                    //mistObj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     mistObj.gameObject.SetActive(true);
                 }
-
-
-                //directionDegreeFloat = float.Parse(directionData, System.Globalization.CultureInfo.InvariantCulture);
             }
         }
     }
     void Start()
     {
         InvokeRepeating("GetDataFromWeb", 2f, 900f);
+
+        //Putting all gameobjects in an array for debugging purposes
+        //objArray = new GameObject[] {}
 
         //Set all conditions as false (not visible when we run the program)
         clearSkyObj.gameObject.SetActive(false);
@@ -147,6 +156,8 @@ public class conditionController : MonoBehaviour
         thunderObj.gameObject.SetActive(false);
         snowObj.gameObject.SetActive(false);
         mistObj.gameObject.SetActive(false);
+
+        counter = 0;
     }
 
     void GetDataFromWeb()
@@ -156,18 +167,29 @@ public class conditionController : MonoBehaviour
    }
 
    void Update() {
+
+       //Debugging
+       //This will turn off all widgets and display first condition which should be 01d/clear skys condition
+       if (Input.GetKeyDown(KeyCode.UpArrow)) {
+            Debug.Log("In Debug Mode");
+
+            //Edge case
+            if (counter > 8) {
+                counter = 0;
+            }
+            debugTurnOffConditions(); //turn off
+            Debug.Log("*Debug; Displaying gameObject" + objArray[counter]);
+            objArray[counter].SetActive(true);
+            counter++;
+
+       }
+
+
        clearSkyObj.transform.Rotate (0.0f, 1.0f, 0.0f, Space.Self);
-       //fewCloudsObj.transform.Rotate (0.0f, 1.0f, 0.0f, Space.Self);
-
-       float horizontalInput = Input.GetAxis("Horizontal");
-        //get the Input from Vertical axis
-        float verticalInput = Input.GetAxis("Vertical");
-
-        //This is the animation code for the clouds. Side to side and Up to down
-        fewCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), fewCloudsObj.transform.position.y, fewCloudsObj.transform.position.z);
-        scatteredCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), scatteredCloudsObj.transform.position.y, scatteredCloudsObj.transform.position.z);
-        brokenCLoudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), brokenCLoudsObj.transform.position.y, brokenCLoudsObj.transform.position.z);
-        //snowObj.transform.position = new Vector3 (snowObj.transform.position.x, -0.7f+Mathf.PingPong(Time.time * 0.1f, 0.1f), snowObj.transform.position.z);
+       //This is the animation code for the clouds. Side to side and Up to down
+       fewCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), fewCloudsObj.transform.position.y, fewCloudsObj.transform.position.z);
+       scatteredCloudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), scatteredCloudsObj.transform.position.y, scatteredCloudsObj.transform.position.z);
+       brokenCLoudsObj.transform.position = new Vector3 (Mathf.PingPong(Time.time * 0.05f, 0.1f), brokenCLoudsObj.transform.position.y, brokenCLoudsObj.transform.position.z);
    }
 }
 

@@ -66,7 +66,10 @@ public class arrowPointer : MonoBehaviour
                 Debug.Log("***Recieved Information!***");
                 Debug.Log(":\nReceived Json: " + webRequest.downloadHandler.text);
                 //Get the data in between
-                string directionData = getData(jsonData, "deg\":", ",");
+                string directionData = getData(jsonData, "deg\":", "}"); //need to check again if it has "gust"
+                //check to see if icon contains gust
+                //if it does, re parse the data using getData() (directionData, "", "gust");
+                //if (directionData.Contains())
                 Debug.Log("Recieved Wind Direction degree2: " + directionData);
 
                 string speedData = getData(jsonData, "\"speed\":", ".");
